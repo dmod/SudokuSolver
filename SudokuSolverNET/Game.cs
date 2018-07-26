@@ -20,32 +20,6 @@ namespace SudokuSolver
             // Default
         }
 
-        public void Populate()
-        {
-            int[,] puzz = new int[ROW_SIZE, ROW_SIZE];
-
-            int[,] array5 = new int[,]
-            {
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-            };
-
-            for (int rowIndex = 0; rowIndex < ROW_SIZE; rowIndex++)
-            {
-                for (int colIndex = 0; colIndex < ROW_SIZE; colIndex++)
-                {
-
-                }
-            }
-        }
-
         public static int[,] SolveAPuzzle(int[,] puzzle)
         {
             ASquare[,] infoPuzzle = new ASquare[9, 9];
@@ -59,6 +33,12 @@ namespace SudokuSolver
                 }
             }
 
+
+            return null;
+        }
+
+        private static void RefreshConflictNumbers(ASquare[,] infoPuzzle)
+        {
             for (int rowIndex = 0; rowIndex < ROW_SIZE; rowIndex++)
             {
                 for (int colIndex = 0; colIndex < ROW_SIZE; colIndex++)
@@ -66,16 +46,15 @@ namespace SudokuSolver
                     var thisSquare = infoPuzzle[rowIndex, colIndex];
                     if (thisSquare.Number == -1)
                     {
-                        var conflictNumbers = GetConflictNumbers(infoPuzzle, rowIndex, colIndex);
+                        HashSet<int> conflictNumbers = GetConflictNumbers(infoPuzzle, rowIndex, colIndex);
                     }
                 }
             }
-            return null;
         }
 
-        private static object GetConflictNumbers(ASquare[,] infoPuzzle, int row, int col)
+            private static HashSet<int> GetConflictNumbers(ASquare[,] infoPuzzle, int row, int col)
         {
-            List<int> conflictNumbers = new List<int>();
+            HashSet<int> conflictNumbers = new HashSet<int>();
 
             // First check the row
             for(int colIndex = 0; colIndex < 9; colIndex++)
@@ -94,7 +73,17 @@ namespace SudokuSolver
             }
 
             // Then the containing square
-            int columnsAwayFromTopLeft = col % 3;
+            GetTopLeftOf3x3Square(row, col, out int topLeftRow, out int topLeftCol);
+
+            for(int rowInsideSquareIndex = topLeftRow; rowInsideSquareIndex < topLeftRow + 3; rowInsideSquareIndex++)
+            {
+                for (int colInsideSquareIndex = topLeftCol; colInsideSquareIndex < topLeftCol + 3; colInsideSquareIndex++)
+                {
+                    if (rowInsideSquareIndex == row && colInsideSquareIndex == col) continue; // Skip over same square
+                    int thisSquare = infoPuzzle[rowInsideSquareIndex, colInsideSquareIndex].Number;
+                    if(thisSquare != -1) conflictNumbers.Add(thisSquare);
+                }
+            }
 
             return conflictNumbers;
         }
