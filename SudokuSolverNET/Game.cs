@@ -33,8 +33,10 @@ namespace SudokuSolver
                 }
             }
 
+            RefreshConflictNumbers(infoPuzzle);
 
-            return null;
+            // TODO: Actually solve the puzzle
+            return puzzle;
         }
 
         private static void RefreshConflictNumbers(ASquare[,] infoPuzzle)
@@ -52,7 +54,7 @@ namespace SudokuSolver
             }
         }
 
-            private static HashSet<int> GetConflictNumbers(ASquare[,] infoPuzzle, int row, int col)
+        private static HashSet<int> GetConflictNumbers(ASquare[,] infoPuzzle, int row, int col)
         {
             HashSet<int> conflictNumbers = new HashSet<int>();
 
